@@ -68,7 +68,8 @@
         .step-title { font-weight: bold; color: #558b2f; margin-bottom: 8px; font-size: 15px; }
         .step-card.combo .step-title { color: #ef6c00; }
         .step-card.whole .step-title { color: #0277bd; }
-        .step-content { font-size: 15px; line-height: 1.6; color: #444; white-space: pre-wrap; }
+        /* 修改点 1：将 pre-wrap 改为 pre-line，避免代码缩进被当成真实空白渲染 */
+        .step-content { font-size: 15px; line-height: 1.6; color: #444; white-space: pre-line; }
         .ipa-badge {
             display: inline-block; background: #00796b; color: white; padding: 4px 12px;
             border-radius: 20px; font-size: 20px; font-weight: bold; margin-bottom: 10px;
@@ -77,9 +78,11 @@
             background: #fffde7; color: #fbc02d; padding: 10px; border-radius: 8px;
             font-size: 14px; margin-bottom: 10px; border: 1px solid #fff9c4;
         }
+        /* 修改点 2：缩小拆解元素的内外边距，使其更紧凑 */
         .breakdown-item {
-            background: #fff; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e0e0e0;
+            background: #fff; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e0e0e0;
         }
+        .breakdown-item:last-child { margin-bottom: 0; }
         .breakdown-header { font-weight: bold; color: #00796b; margin-bottom: 4px; }
         .example-word {
             color: #ff7043; cursor: pointer; font-weight: bold; text-decoration: underline; margin: 0 2px; display: inline-block;
@@ -142,13 +145,11 @@
 <script>
     // ==========================================================
     // 一、GitHub 词库配置清单
-    // 说明：以后你在 GitHub 仓库里新建了一个 JSON 文件，只需要在这里加一行即可。
-    // 请把 url 换成你 GitHub 仓库里 JSON 文件的 Raw 链接。
     // ==========================================================
     const githubBanks = [
-  { 
+        { 
             name: "7年级上册1 (人教版)", 
-            url: "words6shang.json" // 本地测试用相对路径，上线 GitHub 后可保持相对路径不变
+            url: "words6shang.json" 
         },
         { 
             name: "7年级上册2 (人教版)", 
@@ -166,21 +167,19 @@
             name: "7年级下册1(人教版)", 
             url: "words7xia1.json" 
         }
-        // 继续添加更多词库...
     ];
 
     // ==========================================================
     // 二、全局状态管理
     // ==========================================================
-    let currentBank = [];           // 当前正在使用的单词数组
-    let currentWordIndex = 0;       // 当前单词索引
+    let currentBank = [];           
+    let currentWordIndex = 0;       
     const audio = new Audio();
 
     // ==========================================================
     // 三、初始化与词库加载
     // ==========================================================
     
-    // 初始化下拉菜单
     function initBankSwitcher() {
         const select = document.getElementById('bankSwitcher');
         githubBanks.forEach((bank, index) => {
@@ -190,14 +189,12 @@
             select.appendChild(option);
         });
         
-        // 默认加载第一个词库
         if (githubBanks.length > 0) {
             select.value = 0;
             loadBank(0);
         }
     }
 
-    // 加载指定的 GitHub 词库
     async function loadBank(bankIndex) {
         const overlay = document.getElementById('loadingOverlay');
         overlay.style.display = 'flex';
@@ -218,13 +215,12 @@
         }
     }
 
-    // 监听下拉框切换
     document.getElementById('bankSwitcher').addEventListener('change', (e) => {
         loadBank(e.target.value);
     });
 
     // ==========================================================
-    // 四、核心展示与解析逻辑 (适配新JSON结构)
+    // 四、核心展示与解析逻辑
     // ==========================================================
 
     function displayWord() {
@@ -239,7 +235,6 @@
         
         document.getElementById('wordText').textContent = w["英语单词"] || "未知";
         
-        // 适配新的中文解释字段
         const meaningText = w["中文解释"] || "";
         const parts = meaningText.match(/^(\S+)\s+\[(.*?)\]\s*(.*)$/);
         if (parts) {
@@ -282,14 +277,12 @@
         exampleAudio.play().catch(e => console.error("例词发音播放失败:", e));
     }
 
-    // 深度解析核心渲染逻辑
     function analyzeWord() {
         if (currentBank.length === 0) return;
         const w = currentBank[currentWordIndex];
         
         document.getElementById('ipaText').textContent = w["国际音标"] || "无";
         
-        // 渲染字母音标拆解列表
         const breakdown = w["字母与音标的对应关系（拆解）"] || [];
         let breakdownHtml = '';
         
@@ -305,18 +298,10 @@
                 examplesHtml += '无';
             }
 
-            breakdownHtml += `
-                <div class="breakdown-item">
-                    <div class="breakdown-header">
-                        ${item["字母组合"]} <span style="color:#666;">➔</span> ${item["发音"]}
-                    </div>
-                    <div style="font-size:14px; color:#444; margin-bottom:4px;">${item["规则说明"]}</div>
-                    <div style="font-size:14px; color:#888;">${examplesHtml}</div>
-                </div>
-            `;
+            // 修改点 3：将 HTML 拼接写紧凑，避免不必要的换行和缩进产生空白
+            breakdownHtml += `<div class="breakdown-item"><div class="breakdown-header">${item["字母组合"]} <span style="color:#666;">➔</span> ${item["发音"]}</div><div style="font-size:14px; color:#444; margin-bottom:4px;">${item["规则说明"] || "无"}</div><div style="font-size:14px; color:#888;">${examplesHtml}</div></div>`;
         });
 
-        // 组装六步解析卡片
         document.getElementById('stepsContainer').innerHTML = `
             <div class="step-card">
                 <div class="step-title">第一步：找元音，划音节 & 第二步：找辅音定组合</div>
