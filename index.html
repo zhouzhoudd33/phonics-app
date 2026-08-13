@@ -53,12 +53,21 @@
             background: #80cbc4; color: white; font-size: 14px; font-weight: bold; cursor: pointer; transition: transform 0.1s;
         }
         .audio-btn:active { transform: scale(0.95); background: #4db6ac; }
-        .action-controls { display: flex; gap: 10px; }
-        .btn-primary, .btn-secondary {
-            flex: 1; padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; color: white; cursor: pointer;
+        
+        /* 按钮区域布局调整 */
+        .action-controls { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-primary { 
+            flex: 1; padding: 15px; border: none; border-radius: 12px; 
+            font-size: 16px; font-weight: bold; color: white; cursor: pointer; background: #ff7043; 
         }
-        .btn-primary { background: #ff7043; flex: 2; }
-        .btn-secondary { background: #ffb74d; }
+        .nav-controls { display: flex; gap: 10px; }
+        .btn-nav {
+            flex: 1; padding: 15px 5px; border: none; border-radius: 12px;
+            font-size: 15px; font-weight: bold; color: white; cursor: pointer; 
+            background: #ffb74d; transition: transform 0.1s;
+        }
+        .btn-nav:active { transform: scale(0.95); background: #ffa726; }
+
         .analysis-panel {
             background: white; border-radius: 24px; padding: 20px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.08); display: none; animation: slideDown 0.4s ease;
@@ -240,7 +249,13 @@
 
         <div class="action-controls">
             <button class="btn-primary" onclick="analyzeWord()">📖 六步深度解析</button>
-            <button class="btn-secondary" onclick="nextWord()">下一个 ➡️</button>
+        </div>
+
+        <!-- 新的导航按钮区域 -->
+        <div class="nav-controls">
+            <button class="btn-nav" onclick="prevWord()">⬅️ 上一个</button>
+            <button class="btn-nav" onclick="skipWords(10)">⏭️ 下10个</button>
+            <button class="btn-nav" onclick="nextWord()">➡️ 下一个</button>
         </div>
     </main>
 
@@ -752,6 +767,8 @@
         }
         
         if (currentWordIndex >= currentBank.length) currentWordIndex = 0;
+        if (currentWordIndex < 0) currentWordIndex = currentBank.length - 1;
+        
         const w = currentBank[currentWordIndex];
         
         document.getElementById('wordText').textContent = w["英语单词"] || "未知";
@@ -770,9 +787,24 @@
         document.getElementById('analysisPanel').style.display = 'none';
     }
 
+    // 下一个
     function nextWord() {
         if (currentBank.length === 0) return;
         currentWordIndex = (currentWordIndex + 1) % currentBank.length;
+        displayWord();
+    }
+
+    // 上一个
+    function prevWord() {
+        if (currentBank.length === 0) return;
+        currentWordIndex = (currentWordIndex - 1 + currentBank.length) % currentBank.length;
+        displayWord();
+    }
+
+    // 跳跃指定数量 (如跳10个)
+    function skipWords(num) {
+        if (currentBank.length === 0) return;
+        currentWordIndex = (currentWordIndex + num) % currentBank.length;
         displayWord();
     }
 
@@ -852,7 +884,6 @@
         document.getElementById('phonicsRulesModal').classList.add('active');
         document.body.style.overflow = 'hidden';
         
-        // 首次打开时初始化折叠面板和单词点击事件
         if (!rulesInitialized) {
             initRulesPanel();
             rulesInitialized = true;
@@ -864,7 +895,6 @@
         document.body.style.overflow = '';
     }
 
-    // 规则面板内的单词发音函数
     function playRulesWord(word) {
         if (rulesAudio) {
             rulesAudio.pause();
@@ -881,7 +911,6 @@
     function initRulesPanel() {
         const modal = document.getElementById('phonicsRulesModal');
         
-        // 1. 单词点击发音（事件委托）
         modal.addEventListener('click', function(e) {
             const wordEl = e.target.closest('.word');
             if (wordEl) {
@@ -889,20 +918,17 @@
                 return;
             }
             
-            // 2. 折叠面板展开/收起
             const summary = e.target.closest('.panel-summary, .sub-summary');
             if (summary) {
                 const parentPanel = summary.parentElement;
                 parentPanel.classList.toggle('open');
             }
 
-            // 3. 点击模态框背景关闭
             if (e.target === modal) {
                 closePhonicsRules();
             }
         });
 
-        // ESC键关闭
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && modal.classList.contains('active')) {
                 closePhonicsRules();
