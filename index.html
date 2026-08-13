@@ -24,6 +24,12 @@
             font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; transition: background 0.2s;
         }
         .btn-upload:active { background: #00897b; }
+        .btn-rules {
+            background: #7e57c2; color: white; padding: 12px; border-radius: 10px;
+            font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; transition: background 0.2s;
+            border: none;
+        }
+        .btn-rules:active { background: #5e35b1; }
         select {
             width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #b2dfdb;
             font-size: 16px; background: white; color: #555;
@@ -68,7 +74,6 @@
         .step-title { font-weight: bold; color: #558b2f; margin-bottom: 8px; font-size: 15px; }
         .step-card.combo .step-title { color: #ef6c00; }
         .step-card.whole .step-title { color: #0277bd; }
-        /* 修改点 1：将 pre-wrap 改为 pre-line，避免代码缩进被当成真实空白渲染 */
         .step-content { font-size: 15px; line-height: 1.6; color: #444; white-space: pre-line; }
         .ipa-badge {
             display: inline-block; background: #00796b; color: white; padding: 4px 12px;
@@ -78,7 +83,6 @@
             background: #fffde7; color: #fbc02d; padding: 10px; border-radius: 8px;
             font-size: 14px; margin-bottom: 10px; border: 1px solid #fff9c4;
         }
-        /* 修改点 2：缩小拆解元素的内外边距，使其更紧凑 */
         .breakdown-item {
             background: #fff; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e0e0e0;
         }
@@ -92,6 +96,113 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8);
             display: none; justify-content: center; align-items: center; z-index: 999; font-size: 18px; color: #00897b;
         }
+
+        /* ========================================================== */
+        /* 自然拼读规则模态框样式 (所有选择器用 #phonicsRulesModal 限定作用域) */
+        /* ========================================================== */
+        #phonicsRulesModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            display: none; justify-content: center; align-items: flex-start;
+            overflow-y: auto; padding: 10px;
+        }
+        #phonicsRulesModal.active { display: flex; }
+        #phonicsRulesModal .rules-inner {
+            background: #f0f4f8; border-radius: 16px; max-width: 800px; width: 100%;
+            margin: 10px auto; position: relative; padding: 12px;
+            color: #334155; line-height: 1.6;
+            animation: modalSlideIn 0.3s ease;
+        }
+        @keyframes modalSlideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        #phonicsRulesModal .rules-close-btn {
+            position: sticky; top: 0; z-index: 10;
+            background: #ef4444; color: white; border: none; border-radius: 10px;
+            padding: 12px; font-size: 16px; font-weight: bold; cursor: pointer;
+            width: 100%; margin-bottom: 12px;
+        }
+        #phonicsRulesModal .rules-close-btn:active { background: #dc2626; }
+        #phonicsRulesModal .tip-bar {
+            background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8;
+            padding: 12px; border-radius: 8px; font-size: 14px; text-align: center;
+            margin-bottom: 16px; font-weight: 600;
+        }
+        #phonicsRulesModal .panel {
+            background: white; border-radius: 12px; margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; overflow: hidden;
+        }
+        #phonicsRulesModal .panel-summary {
+            padding: 16px; font-weight: 600; font-size: 17px; color: #1e293b;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; user-select: none;
+        }
+        #phonicsRulesModal .panel-summary::after {
+            content: '➕'; font-size: 14px; color: #94a3b8; transition: transform 0.3s;
+        }
+        #phonicsRulesModal .panel.open .panel-summary {
+            border-bottom: 1px solid #e2e8f0; color: #2563eb;
+        }
+        #phonicsRulesModal .panel.open .panel-summary::after { content: '➖'; }
+        #phonicsRulesModal .panel-content {
+            display: none; padding: 16px 12px 12px 24px; position: relative;
+        }
+        #phonicsRulesModal .panel.open .panel-content { display: block; }
+        #phonicsRulesModal .panel-content::before {
+            content: ''; position: absolute; left: 12px; top: 16px; bottom: 12px;
+            width: 2px; background: #e2e8f0; border-radius: 2px;
+        }
+        #phonicsRulesModal .sub-panel {
+            background: #f8fafc; border: 1px solid #f1f5f9; margin: 8px 0; border-radius: 8px; overflow: hidden;
+        }
+        #phonicsRulesModal .sub-summary {
+            padding: 12px; font-size: 15px; font-weight: 600; color: #334155;
+            cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center;
+        }
+        #phonicsRulesModal .sub-summary::after { content: '➕'; font-size: 12px; color: #94a3b8; }
+        #phonicsRulesModal .sub-panel.open .sub-summary { color: #0ea5e9; }
+        #phonicsRulesModal .sub-panel.open .sub-summary::after { content: '➖'; }
+        #phonicsRulesModal .sub-content {
+            display: none; padding: 8px 12px 12px 20px; position: relative;
+        }
+        #phonicsRulesModal .sub-panel.open .sub-content { display: block; }
+        #phonicsRulesModal .sub-content::before {
+            content: ''; position: absolute; left: 8px; top: 12px; bottom: 12px; width: 2px; background: #e2e8f0;
+        }
+        #phonicsRulesModal .card-box {
+            background: white; border: 1px solid #f1f5f9; border-radius: 8px; padding: 12px; margin-bottom: 8px;
+        }
+        #phonicsRulesModal .ipa {
+            font-family: 'Courier New', monospace; background: #e0f2fe; color: #0369a1;
+            padding: 2px 6px; border-radius: 4px; font-size: 14px; font-weight: bold;
+            display: inline-block; margin-bottom: 4px;
+        }
+        #phonicsRulesModal .rule-tag {
+            display: inline-block; background: #f1f5f9; color: #475569;
+            padding: 2px 8px; border-radius: 4px; font-size: 13px; margin-bottom: 4px; margin-left: 4px;
+        }
+        #phonicsRulesModal .kouju {
+            background: #fff7ed; border-left: 4px solid #f59e0b; padding: 8px 10px;
+            margin: 8px 0; border-radius: 0 4px 4px 0; color: #9a3412; font-size: 14px;
+        }
+        #phonicsRulesModal .example { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        #phonicsRulesModal .word {
+            background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;
+            padding: 2px 8px; border-radius: 12px; font-size: 13px;
+            cursor: pointer; transition: all 0.1s; display: inline-block;
+        }
+        #phonicsRulesModal .word:active {
+            background: #dbeafe !important; color: #2563eb !important; transform: scale(0.95);
+        }
+        #phonicsRulesModal .grid-box {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px;
+        }
+        #phonicsRulesModal .text-bold { font-weight: bold; }
+        #phonicsRulesModal .text-blue { color: #1e40af; }
+        #phonicsRulesModal .text-gray { color: #64748b; font-size: 12px; margin-top: 4px; }
+        #phonicsRulesModal .text-small-gray { color: #64748b; font-size: 12px; margin-bottom: 4px; }
+        #phonicsRulesModal .text-xs { font-size: 12px; margin-bottom: 4px; }
+        #phonicsRulesModal .mb-1 { margin-bottom: 4px; }
+        #phonicsRulesModal .mt-2 { margin-top: 8px; }
+        #phonicsRulesModal strong { color: #1e293b; }
     </style>
 </head>
 <body>
@@ -106,6 +217,7 @@
                 📁 上传本地词库/规则文档
                 <input type="file" id="fileInput" accept=".docx,.txt,.json" style="display:none;">
             </label>
+            <button class="btn-rules" onclick="openPhonicsRules()">📋 自然拼读规则</button>
             <select id="bankSwitcher">
                 <option value="">-- 请选择GitHub词库 --</option>
             </select>
@@ -142,31 +254,438 @@
     </section>
 </div>
 
+<!-- ========================================================== -->
+<!-- 自然拼读规则模态框 -->
+<!-- ========================================================== -->
+<div id="phonicsRulesModal">
+    <div class="rules-inner">
+        <button class="rules-close-btn" onclick="closePhonicsRules()">❌ 关闭规则面板</button>
+
+        <div class="tip-bar">💡 提示：点击带有底色的绿色英文单词，立即播放纯正发音</div>
+
+        <!-- 1. 26字母总览 -->
+        <div class="panel open">
+            <div class="panel-summary">1. 26个字母发音总览</div>
+            <div class="panel-content">
+                <div class="grid-box">
+                    <div class="card-box"><div class="text-bold text-blue">A (元音·8种)</div><div class="text-gray">/eɪ/ /æ/ /ə/ /ɪ/ /ɒ/ /ɑː/ /ɔː/ /eə/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">B (辅音·2种)</div><div class="text-gray">/b/、不发音</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">C (辅音·4种)</div><div class="text-gray">/k/ /s/ /ʃ/ /ks/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">D (辅音·2种)</div><div class="text-gray">/d/、不发音</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">E (元音·5种)</div><div class="text-gray">/iː/ /e/ /ɪ/ /ə/、不发音</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">F (辅音·1种)</div><div class="text-gray">/f/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">G (辅音·2种)</div><div class="text-gray">/g/ /dʒ/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">H (辅音·2种)</div><div class="text-gray">/h/、不发音</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">I (元音·3种)</div><div class="text-gray">/aɪ/ /ɪ/ /ə/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">J (辅音·1种)</div><div class="text-gray">/dʒ/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">K (辅音·1种)</div><div class="text-gray">/k/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">L (辅音·2种)</div><div class="text-gray">/l/ /ɫ/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">M (辅音·1种)</div><div class="text-gray">/m/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">N (辅音·1种)</div><div class="text-gray">/n/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">O (元音·6种)</div><div class="text-gray">/əʊ/ /ɒ/ /ə/ /ʌ/ /uː/、不发音</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">P (辅音·1种)</div><div class="text-gray">/p/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">Q (辅音·2种)</div><div class="text-gray">/kw/ /k/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">R (辅音·1种)</div><div class="text-gray">/r/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">S (辅音·6种)</div><div class="text-gray">/s/ /z/ /ʃ/ /ʒ/ /ts/ /dz/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">T (辅音·4种)</div><div class="text-gray">/t/ /ʃ/ /tʃ/、不发音</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">U (元音·6种)</div><div class="text-gray">/juː/ /ʌ/ /ə/ /uː/ /ʊ/ /ɪ/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">V (辅音·1种)</div><div class="text-gray">/v/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">W (辅音·1种)</div><div class="text-gray">/w/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">X (辅音·2种)</div><div class="text-gray">/ks/ /gz/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">Y (半元音·3种)</div><div class="text-gray">/j/ /i/ /aɪ/</div></div>
+                    <div class="card-box"><div class="text-bold text-blue">Z (辅音·1种)</div><div class="text-gray">/z/</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 元音字母发音规则 -->
+        <div class="panel">
+            <div class="panel-summary">2. 元音字母发音规则</div>
+            <div class="panel-content">
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 A (共8种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/eɪ/</span><span class="rule-tag">重读开音节</span><div class="kouju">开音节里有小A，小A小A就读A</div><div class="example"><span class="word">name</span><span class="word">take</span><span class="word">basic</span><span class="word">paper</span></div></div>
+                        <div class="card-box"><span class="ipa">/æ/</span><span class="rule-tag">重读闭音节</span><div class="kouju">闭音节里有小A，小A关禁闭，唉声又叹气</div><div class="example"><span class="word">cat</span><span class="word">rat</span><span class="word">hat</span><span class="word">map</span></div></div>
+                        <div class="card-box"><span class="ipa">/ə/</span><span class="rule-tag">非重读音节</span><div class="kouju">非重读音节里有元音，元音都发打嗝音</div><div class="example"><span class="word">about</span><span class="word">ago</span><span class="word">again</span><span class="word">alone</span></div></div>
+                        <div class="card-box"><span class="ipa">/ɪ/</span><span class="rule-tag">非重读-age后缀</span><div class="text-small-gray">特殊结构，遇到记</div><div class="example"><span class="word">orange</span><span class="word">village</span><span class="word">garbage</span></div></div>
+                        <div class="card-box"><span class="ipa">/ɒ/</span><span class="rule-tag">W后面的A</span><div class="kouju">W的后面要发哦</div><div class="example"><span class="word">want</span><span class="word">wander</span><span class="word">wash</span><span class="word">watch</span></div></div>
+                        <div class="card-box"><span class="ipa">/ɑː/</span><span class="rule-tag">S前面的A (英式)</span><div class="kouju">小蛇在后吓得叫</div><div class="example"><span class="word">glass</span><span class="word">pass</span><span class="word">class</span><span class="word">last</span></div></div>
+                        <div class="card-box"><span class="ipa">/ɔː/</span><span class="rule-tag">L前面的A</span><div class="kouju">字母A拿着小棍儿嗷嗷跑</div><div class="example"><span class="word">wall</span><span class="word">walk</span><span class="word">tall</span><span class="word">ball</span></div></div>
+                        <div class="card-box"><span class="ipa">/eə/</span><span class="rule-tag">极个别特例</span><div class="text-small-gray">遇到记</div><div class="example"><span class="word">area</span><span class="word">parents</span><span class="word">square</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 E (共5种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/iː/</span><span class="rule-tag">重读开音节</span><div class="kouju">开音节里看着E，小E小E就读E</div><div class="example"><span class="word">he</span><span class="word">she</span><span class="word">me</span><span class="word">we</span></div></div>
+                        <div class="card-box"><span class="ipa">/e/</span><span class="rule-tag">重读闭音节</span><div class="kouju">闭音节里看见E，小E关禁闭</div><div class="example"><span class="word">bed</span><span class="word">egg</span><span class="word">vet</span><span class="word">pen</span></div></div>
+                        <div class="card-box"><span class="ipa">/ɪ/</span><span class="rule-tag">非重读(词前半部分)</span><div class="kouju">小E在前非重读，小E就发EEE</div><div class="example"><span class="word">deny</span><span class="word">beside</span><span class="word">repeat</span><span class="word">begin</span></div></div>
+                        <div class="card-box"><span class="ipa">/ə/</span><span class="rule-tag">非重读(词后半部分)</span><div class="kouju">小E在后非重读，小E就发呃呃呃</div><div class="example"><span class="word">happen</span><span class="word">moment</span><span class="word">open</span><span class="word">taken</span></div></div>
+                        <div class="card-box"><span class="rule-tag">不发音 Magic E</span><div class="kouju">e只让前面元音发长音，自己不发音</div><div class="example"><span class="word">make</span><span class="word">cake</span><span class="word">name</span><span class="word">kite</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 I (共3种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/aɪ/</span><span class="rule-tag">重读开音节</span><div class="kouju">开音节里有小I</div><div class="example"><span class="word">hi</span><span class="word">bite</span><span class="word">kite</span><span class="word">like</span></div></div>
+                        <div class="card-box"><span class="ipa">/ɪ/</span><span class="rule-tag">重读闭音节</span><div class="kouju">闭音节里有小I，小I小I要发E</div><div class="example"><span class="word">pig</span><span class="word">kid</span><span class="word">big</span><span class="word">sit</span></div></div>
+                        <div class="card-box"><span class="ipa">/ə/</span><span class="rule-tag">非重读音节</span><div class="example"><span class="word">holiday</span><span class="word">family</span><span class="word">animal</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 O (共6种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/əʊ/</span><span class="rule-tag">重读开音节</span><div class="kouju">开音节里有小O，小O小O就发O</div><div class="example"><span class="word">go</span><span class="word">no</span><span class="word">so</span><span class="word">home</span></div></div>
+                        <div class="card-box"><span class="ipa">/ɒ/</span><span class="rule-tag">重读闭音节</span><div class="kouju">闭音节里有小O，小O受气包气得嗷嗷叫</div><div class="example"><span class="word">frog</span><span class="word">mom</span><span class="word">fox</span><span class="word">dog</span></div></div>
+                        <div class="card-box"><span class="ipa">/ə/</span><span class="rule-tag">非重读音节</span><div class="example"><span class="word">today</span><span class="word">obey</span><span class="word">welcome</span></div></div>
+                        <div class="card-box"><span class="ipa">/ʌ/</span><span class="rule-tag">遇 m, n, th, v</span><div class="kouju">看到美女土豪用剪刀</div><div class="example"><span class="word">come</span><span class="word">mother</span><span class="word">love</span><span class="word">son</span></div></div>
+                        <div class="card-box"><span class="ipa">/uː/</span><span class="rule-tag">特殊词</span><div class="kouju">做谁谁的鞋子</div><div class="example"><span class="word">do</span><span class="word">who</span><span class="word">whose</span><span class="word">shoe</span></div></div>
+                        <div class="card-box"><span class="rule-tag">不发音</span><div class="example"><span class="word">people</span><span class="word">leopard</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 U (共6种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/juː/</span><span class="rule-tag">重读开音节</span><div class="kouju">开音节里有小u，小u小u就发u</div><div class="example"><span class="word">cute</span><span class="word">tube</span><span class="word">cube</span><span class="word">use</span></div></div>
+                        <div class="card-box"><span class="ipa">/ʌ/</span><span class="rule-tag">重读闭音节</span><div class="kouju">小u关禁闭，大喊啊想出去</div><div class="example"><span class="word">bus</span><span class="word">cup</span><span class="word">nut</span><span class="word">hug</span></div></div>
+                        <div class="card-box"><span class="ipa">/ə/</span><span class="rule-tag">非重读音节</span><div class="example"><span class="word">autumn</span><span class="word">difficult</span><span class="word">bonus</span></div></div>
+                        <div class="card-box"><span class="ipa">/uː/</span><span class="rule-tag">开音节前接 l, j, r, s</span><div class="kouju">老舅让蛇咬，小u急得呜呜哭</div><div class="example"><span class="word">blue</span><span class="word">June</span><span class="word">ruler</span><span class="word">fruit</span></div></div>
+                        <div class="card-box"><span class="ipa">/ʊ/</span><span class="rule-tag">特殊词 (推拉放满)</span><div class="kouju">推拉放满读短屋</div><div class="example"><span class="word">push</span><span class="word">pull</span><span class="word">put</span><span class="word">full</span></div></div>
+                        <div class="card-box"><span class="ipa">/ɪ/</span><span class="rule-tag">特殊词</span><div class="example"><span class="word">busy</span><span class="word">minute</span><span class="word">business</span><span class="word">build</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 Y (共3种)</div>
+                    <div class="sub-content">
+                        <div class="kouju">总口诀：字母Y真奇怪，它是一个三面派。在开头要读/j/，多音节词尾要读/i/，单音节词尾要读/aɪ/。</div>
+                        <div class="card-box"><span class="ipa">/j/</span><span class="rule-tag">位于词首</span><div class="kouju">Y占词首当老大，伸出小手比个耶</div><div class="example"><span class="word">yes</span><span class="word">yellow</span><span class="word">yogurt</span><span class="word">year</span></div></div>
+                        <div class="card-box"><span class="ipa">/i/</span><span class="rule-tag">多音节词尾</span><div class="kouju">Y占词尾当小弟，伤心难过EEE</div><div class="example"><span class="word">funny</span><span class="word">happy</span><span class="word">family</span></div></div>
+                        <div class="card-box"><span class="ipa">/aɪ/</span><span class="rule-tag">单音节词尾</span><div class="kouju">Y占词尾前无元音，Y称霸大叫一声哎呀呀</div><div class="example"><span class="word">my</span><span class="word">why</span><span class="word">sky</span><span class="word">cry</span></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 辅音字母发音规则 -->
+        <div class="panel">
+            <div class="panel-summary">3. 辅音字母发音规则</div>
+            <div class="panel-content">
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 B (共2种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/b/</span><span class="rule-tag">常规</span><div class="example"><span class="word">baby</span><span class="word">back</span><span class="word">ball</span><span class="word">bank</span></div></div>
+                        <div class="card-box"><span class="rule-tag">不发音 (遇M或T)</span><div class="kouju">看见M看见T，就会吃掉字母B</div><div class="example"><span class="word">lamb</span><span class="word">climb</span><span class="word">thumb</span><span class="word">debt</span><span class="word">doubt</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 C (共4种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/k/</span><span class="rule-tag">后跟 a/o/u/辅音 (硬C)</span><div class="kouju">C的后面圆溜溜，伸出小手磕光头</div><div class="example"><span class="word">cat</span><span class="word">cup</span><span class="word">cold</span><span class="word">cook</span></div></div>
+                        <div class="card-box"><span class="ipa">/s/</span><span class="rule-tag">后跟 e/i/y (软C)</span><div class="kouju">C的后面IEY，小C差点吓死了</div><div class="example"><span class="word">city</span><span class="word">cycle</span><span class="word">face</span><span class="word">rice</span></div></div>
+                        <div class="card-box"><span class="ipa">/ʃ/</span><span class="rule-tag">后跟 ia/io</span><div class="kouju">C的后面有个十，小C也发sh</div><div class="example"><span class="word">social</span><span class="word">delicious</span><span class="word">special</span></div></div>
+                        <div class="card-box"><span class="ipa">/ks/</span><span class="rule-tag">双C相连</span><div class="kouju">2C相连争水喝</div><div class="example"><span class="word">access</span><span class="word">accent</span><span class="word">accept</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 D (共2种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/d/</span><span class="rule-tag">常规</span><div class="example"><span class="word">date</span><span class="word">dark</span><span class="word">dash</span><span class="word">desk</span></div></div>
+                        <div class="card-box"><span class="rule-tag">不发音 (-dge/-ndle等)</span><div class="kouju">遇到dge，d隐身</div><div class="example"><span class="word">handsome</span><span class="word">sandwich</span><span class="word">edge</span><span class="word">bridge</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 G (共2种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/g/</span><span class="rule-tag">后跟 a/o/u/辅音 (硬G)</span><div class="kouju">咯咯咯</div><div class="example"><span class="word">game</span><span class="word">guess</span><span class="word">goat</span></div></div>
+                        <div class="card-box"><span class="ipa">/dʒ/</span><span class="rule-tag">后跟 e/i/y (软G)</span><div class="kouju">E I Y身后站小G，为它们织毛衣 (特例：forget, give, girl 发 /g/)</div><div class="example"><span class="word">gym</span><span class="word">cage</span><span class="word">giraffe</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 H (共2种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/h/</span><span class="rule-tag">常规</span><div class="example"><span class="word">habit</span><span class="word">hair</span><span class="word">hand</span><span class="word">hot</span></div></div>
+                        <div class="card-box"><span class="rule-tag">不发音</span><div class="kouju">有些组合看形象，谁高谁胖谁不发音</div><div class="example"><span class="word">ghost</span><span class="word">rhyme</span><span class="word">school</span><span class="word">honest</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 S (共6种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/s/</span><span class="rule-tag">词首/遇清辅音</span><div class="example"><span class="word">snake</span><span class="word">sack</span><span class="word">safe</span></div></div>
+                        <div class="card-box"><span class="ipa">/z/</span><span class="rule-tag">两元音之间/遇浊辅音</span><div class="example"><span class="word">music</span><span class="word">busy</span><span class="word">easy</span><span class="word">pigs</span></div></div>
+                        <div class="card-box"><span class="ipa">/ʃ/</span><span class="rule-tag">重读音节遇u</span><div class="kouju">S遇U变嘘嘘</div><div class="example"><span class="word">sugar</span><span class="word">sure</span><span class="word">pressure</span></div></div>
+                        <div class="card-box"><span class="ipa">/ʒ/</span><span class="rule-tag">非重读音节遇u</span><div class="example"><span class="word">usual</span><span class="word">pleasure</span><span class="word">measure</span></div></div>
+                        <div class="card-box"><span class="ipa">/ts/</span><span class="rule-tag">词尾t后加s</span><div class="kouju">ts像中文'次'</div><div class="example"><span class="word">hats</span><span class="word">cats</span><span class="word">bats</span></div></div>
+                        <div class="card-box"><span class="ipa">/dz/</span><span class="rule-tag">词尾d后加s</span><div class="kouju">dz像中文'子'</div><div class="example"><span class="word">hands</span><span class="word">birds</span><span class="word">cards</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 T (共4种)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/t/</span><span class="rule-tag">常规</span><div class="example"><span class="word">toy</span><span class="word">bat</span><span class="word">list</span><span class="word">tack</span></div></div>
+                        <div class="card-box"><span class="ipa">/ʃ/</span><span class="rule-tag">遇 -ia/-io/-ie</span><div class="kouju">T遇ia/io变嘘嘘</div><div class="example"><span class="word">nation</span><span class="word">patient</span><span class="word">action</span></div></div>
+                        <div class="card-box"><span class="ipa">/tʃ/</span><span class="rule-tag">遇 -ure</span><div class="kouju">T遇ure变吃</div><div class="example"><span class="word">future</span><span class="word">picture</span><span class="word">feature</span></div></div>
+                        <div class="card-box"><span class="rule-tag">不发音 (-sten/-stle/-ften)</span><div class="kouju">T在st后常隐身</div><div class="example"><span class="word">often</span><span class="word">listen</span><span class="word">fasten</span><span class="word">castle</span></div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">字母 X (共2种) & 其他辅音</div>
+                    <div class="sub-content">
+                        <div class="card-box"><span class="ipa">/ks/</span><span class="rule-tag">后跟辅音/词尾</span><div class="example"><span class="word">box</span><span class="word">next</span><span class="word">mix</span><span class="word">six</span></div></div>
+                        <div class="card-box"><span class="ipa">/gz/</span><span class="rule-tag">后跟元音字母(重读)</span><div class="kouju">元音在后喊哥哥</div><div class="example"><span class="word">examine</span><span class="word">exist</span><span class="word">exact</span></div></div>
+                        <div class="card-box"><span class="ipa">/z/</span><span class="rule-tag">词首 (极少)</span><div class="example"><span class="word">xylophone</span><span class="word">xerox</span></div></div>
+                        <div class="text-xs mt-2">F: /f/ | J: /dʒ/ | K: /k/ | M: /m/ | N: /n/ | P: /p/ | V: /v/ | Z: /z/ | R: /r/ | W: /w/</div>
+                        <div class="card-box mt-2"><span class="ipa">/l/</span> & <span class="ipa">/ɫ/</span><span class="rule-tag">字母L</span><div class="text-xs">① 词首/词中发 /l/：love, lost</div><div class="text-xs">② 词尾发 Dark L /ɫ/：ball, bell, hill</div></div>
+                        <div class="card-box"><span class="ipa">/kw/</span> & <span class="ipa">/k/</span><span class="rule-tag">字母Q</span><div class="kouju">小Q很小气，拉上小U在一起，一起装阔气 (/kw/)。小Q小U遇大鹅，三人一起咔咔咔 (/k/)。</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 元音字母组合 -->
+        <div class="panel">
+            <div class="panel-summary">4. 元音字母组合 (33个核心)</div>
+            <div class="panel-content">
+                <div class="kouju">双元音通用口诀：两个元音字母排排站，谁站后面谁摆烂；站在前面发啥音？元音长音/字母名！</div>
+                <div class="sub-panel">
+                    <div class="sub-summary">R控制元音 (ar, er, ir, ur, or)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>【ar 组合】</strong><div class="kouju">短单词发 /ɑː/，长单词打嗝 /ə/。w后特例发 /ɔː/。</div><div class="text-xs mb-1">短单词(4字母内)：park, card, farm, car</div><div class="text-xs mb-1">长单词(5字母上)：sugar, collar, dollar</div><div class="text-xs">w后特例：war, ward, warn, warm</div></div>
+                        <div class="card-box"><strong>【er, ir, ur, or 统一】</strong><div class="kouju">元音加r不会发，饿了你就吃掉它！饿饿三天吃两粒米，都发"饿了音" /ɜː/！</div><div class="text-xs mb-1">er: her, mercy, serve</div><div class="text-xs mb-1">ir: bird, girl, shirt (遇e特例发/aɪər/：fire, tire)</div><div class="text-xs mb-1">ur: hurt, turn, nurse</div><div class="text-xs">or: cord, form, fork (w后发/ɜːr/：word, work)</div></div>
+                        <div class="card-box"><strong>【er 词中与词尾辨析】</strong><div class="kouju">er夹在词中间，三天只吃两粒米 /ɜː/；er放在词末尾，大白鹅 /ə/！</div><div class="text-xs mb-1">词中间：term, alert, perfect</div><div class="text-xs">词末尾：water, spider, river</div></div>
+                        <div class="card-box"><strong>【or 三大发音】</strong><div class="text-xs mb-1">① 单词中间：/ɔː/ (pork, corn, horse)</div><div class="text-xs mb-1">② W字母后：/ɜːr/ (work, world, worm)</div><div class="text-xs">③ 单词词尾：/ər/ (actor, doctor)</div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">Y系列 (ay, ey, oy, ai, oi)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>【ai 和 ay】</strong><div class="kouju">字母i和字母y，胆小又奇怪；看到字母a，通通躲起来！(发 /eɪ/)</div><div class="text-xs">ai站中间，ay当尾巴。例：day, train, rain, bait</div></div>
+                        <div class="card-box"><strong>【ey 组合】</strong><div class="kouju">重读音节发 /eɪ/，非重读音节发 /ɪ/。长单词住 /ɪ/，短单词叹 /eɪ/。</div><div class="text-xs mb-1">重读/短词：they, gray, obey</div><div class="text-xs">非重读/长词：monkey, donkey, money</div></div>
+                        <div class="card-box"><strong>【oy 和 oi】</strong><div class="kouju">OY大长尾常在尾，熬夜第一名 /ɔɪ/。小小OI很直白，加起来 /ɔɪ/。</div><div class="text-xs">oy: toy, boy, destroy</div><div class="text-xs">oi: oil, join, voice, coin</div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">W系列 (aw, au, ew, ow, ou)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>【aw 和 au】</strong><div class="kouju">aw、au长得像，发音一样 /ɔː/。aw胖在尾，au瘦在中间。</div><div class="text-xs">特例(张大嘴发/ɑː/)：aunt, laugh</div><div class="text-xs">常态：paw, sauce, draw, pause, autumn</div></div>
+                        <div class="card-box"><strong>【ew 组合】</strong><div class="kouju">ew总喊'怎么又是你' /juː/。怕辣椒炒肉(l,g,ch,r)辣哭 /uː/。</div><div class="text-xs mb-1">常态：new, few, view</div><div class="text-xs">特例：drew, chew, flew, jewel</div></div>
+                        <div class="card-box"><strong>【ow 组合】</strong><div class="kouju">尾巴 /əʊ/ (海鸥音)；中间 /aʊ/ (老虎音)；三个特例(now, how, cow)读 /aʊ/。</div><div class="text-xs mb-1">词尾：low, yellow, snow</div><div class="text-xs">词中：down, cloud, brown</div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">L系列 & 两两组合 (al, ea, ee, ei, ie, ui, oo, oa)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>【al 组合】</strong><div class="kouju">遇L、K张哈 /ɔː/ (ball, talk)；遇F、M喊 /ɑː/ (half, calm)。</div></div>
+                        <div class="card-box"><strong>【ea 组合 (4种)】</strong><div class="kouju">EA遇双音节/D/摩擦音，不发 /iː/ 发小口型 /e/。单音节常发 /iː/。</div><div class="text-xs mb-1">① /iː/: eat, meat, read</div><div class="text-xs mb-1">② /e/: bread, head, deaf (遇D)</div><div class="text-xs mb-1">③ /ɪə/: idea, real, theatre</div><div class="text-xs">④ /eɪ/: great, break, steak</div></div>
+                        <div class="card-box"><strong>【ee 与 ea 辨析】</strong><div class="kouju">EA、EE都发长音 /iː/。EA喜欢T和D，EE喜欢B和P。</div></div>
+                        <div class="card-box"><strong>【ei 组合 (3种)】</strong><div class="text-xs mb-1">① 重读发 /eɪ/: weigh, eight</div><div class="text-xs mb-1">② 非重读发 /ɪ/: forfeit</div><div class="text-xs">③ S/C后发 /iː/: receive</div></div>
+                        <div class="card-box"><strong>【ie 组合】</strong><div class="kouju">夹中间小e掌局发 /iː/ (brief, yield)；放词尾小i出声发 /aɪ/ (pie, lie, tie)。</div></div>
+                        <div class="card-box"><strong>【ui 组合】</strong><div class="kouju">常态发 /ɪ/ (build, guitar)；遇L,J,R,S发 /uː/ (fruit, juice, suit)。</div></div>
+                        <div class="card-box"><strong>【oo 组合 (4种)】</strong><div class="kouju">主体发长音 /uː/；k前短念 /ʊ/ (好脚站木羊毛短)；门和地板凹陷 /ɔː/；洪水鲜血可怕 /ʌ/。</div><div class="text-xs mb-1">/uː/: food, zoo, cool</div><div class="text-xs mb-1">/ʊ/: look, book; good, foot</div><div class="text-xs mb-1">/ɔː/: door, floor</div><div class="text-xs">/ʌ/: flood, blood</div></div>
+                        <div class="card-box"><strong>【oa / oe 组合】</strong><div class="kouju">oa/oe发 /əʊ/ 跟o走。</div><div class="text-xs">oa: coat, goat, boat; oe: toe, foe, goes</div></div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">三字母 & +re组合</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>【our (5种)】</strong><div class="text-xs mb-1">① /ɔː/: four, source</div><div class="text-xs mb-1">② /ʊər/ (捂耳音，见T): detour</div><div class="text-xs mb-1">③ /ɜːr/ (见J): journey</div><div class="text-xs mb-1">④ /aʊər/ (感慨音): our, flour, hour</div><div class="text-xs">⑤ /ər/ (美式): color, favor</div></div>
+                        <div class="card-box"><strong>【ear (大耳朵)】</strong><div class="kouju">开头中间发长音 /ɜː/；在尾巴发耳朵音 /ɪə/；熊穿衣誓撕梨发 /eə/ (air)。</div><div class="text-xs">/ɜː/: early, earth | /ɪə/: hear, clear | /eə/: bear, wear, pear</div></div>
+                        <div class="card-box"><strong>【eer / oar / air】</strong><div class="text-xs mb-1">eer: 发 /ɪə/ (beer, deer, cheer)</div><div class="text-xs mb-1">oar: 吼叫 /ɔː/ (roar, soar, board)</div><div class="text-xs">air/are: 阿姨爱上花 /eə/ (care, hair, chair, share)</div></div>
+                        <div class="card-box"><strong>【ere / ure / ore】</strong><div class="text-xs mb-1">ere: 耳朵 /ɪə/ (here), 空气 /eə/ (where), 长音 /ɜː/ (were)</div><div class="text-xs mb-1">ure: 开车 /tʃə/ (picture), "热" /ʒə/ (measure), "蛇" /ʃə/ (pressure)</div><div class="text-xs">ore: 吃掉鹅 /ɔː/ (core, more, store)</div></div>
+                        <div class="card-box"><strong>【补充 eu / ue】</strong><div class="text-xs">eu发 /juː/ (euro, feud)</div><div class="text-xs">ue发 /juː/ (hue, fuel); 在l,j,r,s后发 /uː/ (glue, blue, true)</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. 辅音字母组合 -->
+        <div class="panel">
+            <div class="panel-summary">5. 辅音字母组合</div>
+            <div class="panel-content">
+                <div class="kouju">总口诀：H家族怪，连一起全变换(ch吃sh嘘gh不响ph扶wh我)；th两头轻中间浊；S家族有魔法，词尾轻词首浊。</div>
+                <div class="sub-panel">
+                    <div class="sub-summary">H系列 (ch, sh, th, ph, wh, gh)</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>ch:</strong> <span class="ipa">/tʃ/</span> (chair) | <span class="ipa">/k/</span> (school) | <span class="ipa">/ʃ/</span> (chef)</div>
+                        <div class="card-box"><strong>sh:</strong> <span class="ipa">/ʃ/</span> (sheep, fish)</div>
+                        <div class="card-box"><strong>th:</strong> <span class="ipa">/θ/</span> 清音(词首尾: three, teeth) | <span class="ipa">/ð/</span> 浊音(词中: mother, this)</div>
+                        <div class="card-box"><strong>ph:</strong> <span class="ipa">/f/</span> (phone, photo)</div>
+                        <div class="card-box"><strong>wh:</strong> <span class="ipa">/w/</span> (what, white) | 遇O发 <span class="ipa">/h/</span> (who, whose)</div>
+                        <div class="card-box"><strong>gh:</strong> 词首发 <span class="ipa">/g/</span> (ghost) | 词尾发 <span class="ipa">/f/</span> (laugh) | 遇T不发音 (light, bought)</div>
+                        <div class="card-box"><strong>sc/sch:</strong> 后eiy发 <span class="ipa">/s/</span> (science) | 后aou浊化 <span class="ipa">/sg/</span> (scale) | sch发 <span class="ipa">/sk/</span> (school)</div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">L/R/W家族 & Blend连缀</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>L家族 (不用记，直接拼):</strong> bl, cl, fl, gl, pl, sl (black, class, flag)</div>
+                        <div class="card-box"><strong>-le结尾 (哑巴e):</strong> ble, cle, dle, gle, ple (table, candle, apple)</div>
+                        <div class="card-box"><strong>R家族 (重点记tr/dr):</strong> tr发/tr/, dr发/dr/。其余br, cr, fr, gr, pr自然顺拼。</div>
+                        <div class="card-box"><strong>W家族:</strong> qu发/kw/, tw发/tw/, sw发/sw/。</div>
+                        <div class="card-box"><strong>S-Blend浊化:</strong> st词首发/sd/, sk词首发/sg/, sp词首发/sb/。</div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">Trigraph三合辅音 (3字母1音)</div>
+                    <div class="sub-content">
+                        <div class="grid-box">
+                            <div class="card-box"><strong>tch</strong> <span class="ipa">/tʃ/</span><div class="text-xs">watch, catch</div></div>
+                            <div class="card-box"><strong>dge</strong> <span class="ipa">/dʒ/</span><div class="text-xs">bridge, judge</div></div>
+                            <div class="card-box"><strong>igh</strong> <span class="ipa">/aɪ/</span><div class="text-xs">high, light</div></div>
+                            <div class="card-box"><strong>shr</strong> <span class="ipa">/ʃr/</span><div class="text-xs">shrink</div></div>
+                            <div class="card-box"><strong>spl</strong> <span class="ipa">/spl/</span><div class="text-xs">splash</div></div>
+                            <div class="card-box"><strong>spr</strong> <span class="ipa">/spr/</span><div class="text-xs">spring</div></div>
+                            <div class="card-box"><strong>squ</strong> <span class="ipa">/skw/</span><div class="text-xs">square</div></div>
+                            <div class="card-box"><strong>str</strong> <span class="ipa">/str/</span><div class="text-xs">street</div></div>
+                            <div class="card-box"><strong>thr</strong> <span class="ipa">/θr/</span><div class="text-xs">three</div></div>
+                            <div class="card-box"><strong>scr</strong> <span class="ipa">/skr/</span><div class="text-xs">screen</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">不发音辅音组合</div>
+                    <div class="sub-content">
+                        <div class="kouju">辅音组合一对对，谁高谁胖谁闭嘴。看见M看见T，灭掉B！</div>
+                        <div class="grid-box">
+                            <div class="card-box"><strong>kn</strong> <span class="ipa">/n/</span><div class="text-xs">know, knife</div></div>
+                            <div class="card-box"><strong>wr</strong> <span class="ipa">/r/</span><div class="text-xs">write, wrong</div></div>
+                            <div class="card-box"><strong>gn</strong> <span class="ipa">/n/</span><div class="text-xs">sign, foreign</div></div>
+                            <div class="card-box"><strong>mb</strong> <span class="ipa">/m/</span><div class="text-xs">climb, comb</div></div>
+                            <div class="card-box"><strong>mn</strong> <span class="ipa">/m/</span><div class="text-xs">autumn, column</div></div>
+                            <div class="card-box"><strong>bt</strong> <span class="ipa">/t/</span><div class="text-xs">debt, doubt</div></div>
+                            <div class="card-box"><strong>rh</strong> <span class="ipa">/r/</span><div class="text-xs">rhyme, rhythm</div></div>
+                            <div class="card-box"><strong>sten</strong> <span class="ipa">/sn/</span><div class="text-xs">listen, fasten</div></div>
+                            <div class="card-box"><strong>stle</strong> <span class="ipa">/sl/</span><div class="text-xs">castle, whistle</div></div>
+                            <div class="card-box"><strong>ps</strong> <span class="ipa">/s/</span><div class="text-xs">psychology</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">双写辅音 & 词尾连缀</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>双写辅音 (发单音):</strong> ff, ll, ss, zz, pp, bb, dd, tt, nn, mm, rr, gg。cc元音间发/ks/。</div>
+                        <div class="card-box"><strong>含L词尾:</strong> ld, lf, lk, lm, lp, lt (child, half, milk)</div>
+                        <div class="card-box"><strong>含R词尾:</strong> rd, rk, rm, rn, rt, rf, rl, rth (bird, park, arm)</div>
+                        <div class="card-box"><strong>含N词尾:</strong> nd, nt, nk, ng (hand, want, bank, sing)</div>
+                        <div class="card-box"><strong>含S/M/其他:</strong> st, sk, sp, mp, ft, pt, ct, xt (fast, jump, fact)</div>
+                        <div class="card-box"><strong>三辅音词尾:</strong> mpt, nct, lth, nth, sts, nds, ght (prompt, month, light)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. 音节与重音 -->
+        <div class="panel">
+            <div class="panel-summary">6. 音节划分与重音规则</div>
+            <div class="panel-content">
+                <div class="sub-panel">
+                    <div class="sub-summary">音节划分模式</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>VV (两元音相邻):</strong> 两元音之间拆分</div>
+                        <div class="card-box"><strong>VCCV (两辅音夹元音):</strong> 两辅音之间拆分</div>
+                        <div class="card-box"><strong>VCV (单辅音夹元音):</strong> 先试V/CV(前开)，不通则VC/V(前闭)</div>
+                        <div class="card-box"><strong>VCCCV (三辅音夹元音):</strong> r/l不分离靠后，digraph不拆，其余第一个辅音后拆</div>
+                        <div class="card-box"><strong>辅音+le结尾:</strong> 从末尾倒数3字母处拆分</div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">特殊词缀整体认读</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>-tion:</strong> <span class="ipa">/ʃən/</span> (nation) | s后 <span class="ipa">/tʃən/</span> (question)</div>
+                        <div class="card-box"><strong>-sion:</strong> 辅音后 <span class="ipa">/ʃən/</span> (tension) | 元音后 <span class="ipa">/ʒən/</span> (vision)</div>
+                        <div class="card-box"><strong>-ture:</strong> <span class="ipa">/tʃər/</span> (nature, picture)</div>
+                        <div class="card-box"><strong>-sure:</strong> 元音后 <span class="ipa">/ʒər/</span> (measure) | 辅音后 <span class="ipa">/ʃər/</span> (pressure)</div>
+                        <div class="card-box"><strong>-cian:</strong> <span class="ipa">/ʃən/</span> (musician)</div>
+                        <div class="card-box"><strong>-gue / -que:</strong> <span class="ipa">/g/</span> (league) | <span class="ipa">/k/</span> (unique)</div>
+                        <div class="card-box"><strong>-nge:</strong> <span class="ipa">/ndʒ/</span> (change)</div>
+                        <div class="card-box"><strong>OUS/IOUS:</strong> <span class="ipa">/əs/</span> (famous, delicious)</div>
+                        <div class="card-box"><strong>FUL:</strong> <span class="ipa">/fʊl/</span> (careful)</div>
+                        <div class="card-box"><strong>DOM:</strong> 词尾 <span class="ipa">/dəm/</span> (kingdom) | 词首分音节</div>
+                        <div class="card-box"><strong>MENT/NESS/ABLE:</strong> <span class="ipa">/mənt/</span> | <span class="ipa">/nəs/</span> | <span class="ipa">/əbl/</span></div>
+                        <div class="card-box"><strong>CIAL/TIAL:</strong> <span class="ipa">/ʃl/</span> (social, partial)</div>
+                        <div class="card-box"><strong>ING/IGN:</strong> ING <span class="ipa">/ɪŋ/</span> (sing) | 词尾IGN <span class="ipa">/aɪn/</span> (sign) | 词中IGN <span class="ipa">/ɪɡn/</span></div>
+                        <div class="card-box"><strong>GU:</strong> 后有元音 <span class="ipa">/g/</span> (guess) | 后无元音 <span class="ipa">/gʌ/</span> (gun)</div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">重音判断规则</div>
+                    <div class="sub-content">
+                        <div class="kouju">动介比较二，其他词性大多一。</div>
+                        <div class="card-box"><strong>双音节名词/形容词:</strong> 第1音节</div>
+                        <div class="card-box"><strong>双音节动词:</strong> 第2音节</div>
+                        <div class="card-box"><strong>三音节及以上:</strong> 倒数第3音节</div>
+                        <div class="card-box"><strong>吸引重音到前1音节(倒2):</strong> -tion, -sion, -ic</div>
+                        <div class="card-box"><strong>吸引重音到前1音节(倒3):</strong> -ical, -ity, -ty, -phy, -gy, -cy</div>
+                        <div class="card-box"><strong>自身带重音(末音节):</strong> -ee, -eer, -oo, -een, -ese</div>
+                        <div class="card-box"><strong>不改变重音:</strong> -ful, -ly, -ness, -ment, -able, -less, -ing, -ed, -er, -est</div>
+                        <div class="card-box"><strong>次重音:</strong> 主重音前隔1个轻读音节</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. 拼读与连读技巧 -->
+        <div class="panel">
+            <div class="panel-summary">7. 拼读块与连读技巧</div>
+            <div class="panel-content">
+                <div class="sub-panel">
+                    <div class="sub-summary">基础拼读块结构</div>
+                    <div class="sub-content">
+                        <div class="card-box"><strong>V (元音):</strong> a, I, up, in</div>
+                        <div class="card-box"><strong>CV (辅+元):</strong> 元音常发长音 (he, go, no)</div>
+                        <div class="card-box"><strong>VC (元+辅):</strong> 元音发短音 (at, in, on, up)</div>
+                        <div class="card-box"><strong>CVC (辅+元+辅):</strong> 闭音节发短音 (cat, dog, sit)</div>
+                        <div class="card-box"><strong>CCVC / CVCC:</strong> 连缀+短元音 (stop, black / fast, hand)</div>
+                        <div class="card-box"><strong>CVVC (辅+双元+辅):</strong> 组合发一音 (boat, feet, rain)</div>
+                        <div class="card-box"><strong>CVCe (Magic E):</strong><div class="kouju">结尾有小e，前面元音发长音</div>a_e /eɪ/, e_e /iː/, i_e /aɪ/, o_e /əʊ/, u_e /juː/或/uː/</div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">长难单词拆解口诀</div>
+                    <div class="sub-content">
+                        <div class="kouju">一数二定三找。一数：数元音划音节(一归后，二分手)；二定：定重音(动介二其他一)；三找：辅音拼音拼，元音口诀找。</div>
+                        <div class="card-box"><strong>综合拆解示例：</strong> thoughtful -> TH(/θ/) + OU+GHT(/ɔːt/) + FUL(/fəl/) = /ˈθɔːtfəl/</div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">浊化现象</div>
+                    <div class="sub-content">
+                        <div class="kouju">小蛇去体检，偏偏他咳喘。(S后跟P/T/K/C/tr时清辅音浊化)</div>
+                        <div class="card-box">/sp/ -> /sb/ (sport, speak)</div>
+                        <div class="card-box">/st/ -> /sd/ (study, stop)</div>
+                        <div class="card-box">/sk/或/sc/ -> /sɡ/ (sky, school)</div>
+                        <div class="card-box">/str/ -> /sdr/ (street, strict)</div>
+                    </div>
+                </div>
+                <div class="sub-panel">
+                    <div class="sub-summary">连读与失去爆破九大口诀</div>
+                    <div class="sub-content">
+                        <div class="card-box">1. <strong>前辅后元直接连:</strong> Stand up (Stand-up)</div>
+                        <div class="card-box">2. <strong>T+元音变D+元音:</strong> Not at all (Nod-id-all)</div>
+                        <div class="card-box">3. <strong>R+元音连读:</strong> There is (There-ris)</div>
+                        <div class="card-box">4. <strong>L+元音连读:</strong> Fall over (Fall-lover)</div>
+                        <div class="card-box">5. <strong>N+元音连读:</strong> An apple (An-napple)</div>
+                        <div class="card-box">6. <strong>元+元加音:</strong> /eɪ//iː/加Y (See-it)；/uː//əʊ/加W (Do-it)</div>
+                        <div class="card-box">7. <strong>省略H:</strong> tell him (/telɪm/)</div>
+                        <div class="card-box">8. <strong>T/D/S遇U变音:</strong> S+U发/ʃ/，T+U发/tʃ/，D+U发/dʒ/</div>
+                        <div class="card-box">9. <strong>失去爆破:</strong><div class="kouju">P B T D K G 见到辅音就失去 (只做口型不发声)</div><div class="text-xs">a cheap book (P不发音), sit down (T不发音)</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // ==========================================================
     // 一、GitHub 词库配置清单
     // ==========================================================
     const githubBanks = [
-        { 
-            name: "7年级上册1 (人教版)", 
-            url: "words6shang.json" 
-        },
-        { 
-            name: "7年级上册2 (人教版)", 
-            url: "words71.json" 
-        },
-        { 
-            name: "7年级上册3 (人教版)", 
-            url: "words72.json" 
-        },
-        { 
-            name: "7年级上册 4(人教版)", 
-            url: "words73.json" 
-        },
-        { 
-            name: "7年级下册1(人教版)", 
-            url: "words7xia1.json" 
-        }
+        { name: "7年级上册1 (人教版)", url: "words6shang.json" },
+        { name: "7年级上册2 (人教版)", url: "words71.json" },
+        { name: "7年级上册3 (人教版)", url: "words72.json" },
+        { name: "7年级上册 4(人教版)", url: "words73.json" },
+        { name: "7年级下册1(人教版)", url: "words7xia1.json" }
     ];
 
     // ==========================================================
@@ -175,6 +694,8 @@
     let currentBank = [];           
     let currentWordIndex = 0;       
     const audio = new Audio();
+    let rulesAudio = null;          // 规则面板内单词发音专用
+    let rulesInitialized = false;   // 规则面板事件是否已初始化
 
     // ==========================================================
     // 三、初始化与词库加载
@@ -297,8 +818,6 @@
             } else {
                 examplesHtml += '无';
             }
-
-            // 修改点 3：将 HTML 拼接写紧凑，避免不必要的换行和缩进产生空白
             breakdownHtml += `<div class="breakdown-item"><div class="breakdown-header">${item["字母组合"]} <span style="color:#666;">➔</span> ${item["发音"]}</div><div style="font-size:14px; color:#444; margin-bottom:4px;">${item["规则说明"] || "无"}</div><div style="font-size:14px; color:#888;">${examplesHtml}</div></div>`;
         });
 
@@ -327,7 +846,72 @@
     }
 
     // ==========================================================
-    // 五、本地文件上传备用逻辑
+    // 五、自然拼读规则模态框逻辑
+    // ==========================================================
+    function openPhonicsRules() {
+        document.getElementById('phonicsRulesModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // 首次打开时初始化折叠面板和单词点击事件
+        if (!rulesInitialized) {
+            initRulesPanel();
+            rulesInitialized = true;
+        }
+    }
+
+    function closePhonicsRules() {
+        document.getElementById('phonicsRulesModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // 规则面板内的单词发音函数
+    function playRulesWord(word) {
+        if (rulesAudio) {
+            rulesAudio.pause();
+            rulesAudio = null;
+        }
+        const cleanWord = word.replace(/[^a-zA-Z'\-]/g, '');
+        if (!cleanWord || cleanWord.length < 2) return;
+        
+        const url = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(cleanWord)}&type=2`;
+        rulesAudio = new Audio(url);
+        rulesAudio.play().catch(e => console.error("规则面板播放失败:", e));
+    }
+
+    function initRulesPanel() {
+        const modal = document.getElementById('phonicsRulesModal');
+        
+        // 1. 单词点击发音（事件委托）
+        modal.addEventListener('click', function(e) {
+            const wordEl = e.target.closest('.word');
+            if (wordEl) {
+                playRulesWord(wordEl.textContent);
+                return;
+            }
+            
+            // 2. 折叠面板展开/收起
+            const summary = e.target.closest('.panel-summary, .sub-summary');
+            if (summary) {
+                const parentPanel = summary.parentElement;
+                parentPanel.classList.toggle('open');
+            }
+
+            // 3. 点击模态框背景关闭
+            if (e.target === modal) {
+                closePhonicsRules();
+            }
+        });
+
+        // ESC键关闭
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closePhonicsRules();
+            }
+        });
+    }
+
+    // ==========================================================
+    // 六、本地文件上传备用逻辑
     // ==========================================================
     document.getElementById('fileInput').addEventListener('change', async (event) => {
         const file = event.target.files[0];
