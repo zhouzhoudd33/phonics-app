@@ -833,51 +833,60 @@
     }
 
     function analyzeWord() {
-        if (currentBank.length === 0) return;
-        const w = currentBank[currentWordIndex];
-        
-        document.getElementById('ipaText').textContent = w["国际音标"] || "无";
-        
-        const breakdown = w["字母与音标的对应关系（拆解）"] || [];
-        let breakdownHtml = '';
-        
-        breakdown.forEach(item => {
-            let examplesHtml = '例词：';
-            if (item["例词"] && item["例词"].length > 0) {
-                item["例词"].forEach((ex, idx) => {
-                    const safeEx = ex.replace(/'/g, "\\'");
-                    examplesHtml += `<span class="example-word" onclick="playExampleWord('${safeEx}')">${ex}</span>`;
-                    if (idx < item["例词"].length - 1) examplesHtml += ', ';
-                });
-            } else {
-                examplesHtml += '无';
-            }
-            breakdownHtml += `<div class="breakdown-item"><div class="breakdown-header">${item["字母组合"]} <span style="color:#666;">➔</span> ${item["发音"]}</div><div style="font-size:14px; color:#444; margin-bottom:4px;">${item["规则说明"] || "无"}</div><div style="font-size:14px; color:#888;">${examplesHtml}</div></div>`;
-        });
+    if (currentBank.length === 0) return;
+    const w = currentBank[currentWordIndex];
+    
+    document.getElementById('ipaText').textContent = w["国际音标"] || "无";
+    
+    // ✅ 修复：字段名必须与 JSON 完全一致
+    const breakdown = w["字母与音标的对应关系（在音节划分里，识别组合发音）"] || [];
+    let breakdownHtml = '';
+    
+    breakdown.forEach(item => {
+        let examplesHtml = '例词：';
+        if (item["例词"] && item["例词"].length > 0) {
+            item["例词"].forEach((ex, idx) => {
+                const safeEx = ex.replace(/'/g, "\\'");
+                examplesHtml += `<span class="example-word" onclick="playExampleWord('${safeEx}')">${ex}</span>`;
+                if (idx < item["例词"].length - 1) examplesHtml += ', ';
+            });
+        } else {
+            examplesHtml += '无';
+        }
+        breakdownHtml += `<div class="breakdown-item">
+            <div class="breakdown-header">${item["字母组合"]} <span style="color:#666;">➔</span> ${item["发音"]}</div>
+            <div style="font-size:14px; color:#444; margin-bottom:4px;">${item["规则说明"] || "无"}</div>
+            <div style="font-size:14px; color:#888;">${examplesHtml}</div>
+        </div>`;
+    });
 
-        document.getElementById('stepsContainer').innerHTML = `
-            <div class="step-card">
-                <div class="step-title">第一步：找元音，划音节 & 第二步：找辅音定组合</div>
-                <div class="step-content"><strong>音节划分：</strong>${w["音节划分"] || "无"}<br><br><strong>研判分析：</strong>${w["音节划分研判"] || "无"}</div>
+    document.getElementById('stepsContainer').innerHTML = `
+        <div class="step-card">
+            <div class="step-title">第一步：找元音，划音节 & 第二步：找辅音定组合</div>
+            <div class="step-content">
+                <strong>音节划分：</strong>${w["音节划分"] || "无"}
             </div>
-            <div class="step-card">
-                <div class="step-title">第三步：组拼读块 & 第四步：套规则发音</div>
-                <div class="step-content" style="background:#fff; padding:10px; border-radius:8px;">
-                    ${breakdownHtml || "无拆解数据"}
-                </div>
+        </div>
+        <div class="step-card">
+            <div class="step-title">第三步：组拼读块 & 第四步：套规则发音</div>
+            <div class="step-content" style="background:#fff; padding:10px; border-radius:8px;">
+                ${breakdownHtml || "无拆解数据"}
             </div>
-            <div class="step-card combo">
-                <div class="step-title">第五步：定重音</div>
-                <div class="step-content"><strong>重音位置：</strong>${w["重音位置"] || "无"}<br><br><strong>研判分析：</strong>${w["重音研判"] || "无"}</div>
+        </div>
+        <div class="step-card combo">
+            <div class="step-title">第五步：定重音</div>
+            <div class="step-content">
+                <strong>重音位置：</strong>${w["重音位置"] || "无"}
             </div>
-            <div class="step-card whole">
-                <div class="step-title">第六步：合成全词（整词拼读回顾）</div>
-                <div class="step-content">请根据以上拆解规则，将 <strong>${w["英语单词"]}</strong> (${w["国际音标"]}) 连贯读出。</div>
-            </div>
-        `;
+        </div>
+        <div class="step-card whole">
+            <div class="step-title">第六步：合成全词（整词拼读回顾）</div>
+            <div class="step-content">请根据以上拆解规则，将 <strong>${w["英语单词"]}</strong> (${w["国际音标"]}) 连贯读出。</div>
+        </div>
+    `;
 
-        document.getElementById('analysisPanel').style.display = 'block';
-    }
+    document.getElementById('analysisPanel').style.display = 'block';
+}
 
     // ==========================================================
     // 五、自然拼读规则模态框逻辑
