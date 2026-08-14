@@ -421,7 +421,8 @@
         if (currentBank.length === 0) return;
         const w = currentBank[currentWordIndex];
         document.getElementById('ipaText').textContent = w["国际音标"] || "无";
-        const breakdown = w["字母与音标的对应关系（拆解）"] || [];
+        const breakdown = w["字母与音标的对应关系（在音节划分里，识别组合发音）"] || 
+                  w["字母与音标的对应关系（拆解）"] || [];
         let breakdownHtml = '';
         breakdown.forEach(item => {
             let examplesHtml = '例词：';
